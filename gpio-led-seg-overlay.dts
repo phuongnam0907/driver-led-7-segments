@@ -1,0 +1,36 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+    compatible = "raspberrypi,3-model-b", "brcm,bcm2837", "brcm,bcm2835";
+
+	fragment@0 {
+		target = <&gpio>;
+		__overlay__ {
+			led7_pins: led7_pins {
+                brcm,pins = <13 5 6>;
+                brcm,function = <1>;
+                brcm,pull = <2 2 2>;
+            };
+		};
+	};
+
+	fragment@1 {
+		target-path = "/";
+		__overlay__ {
+			led7control: led7control {
+				compatible = "led7-segments";
+				status = "okay";
+				pinctrl-0 = <&led7_pins>;
+				sclk-gpios = <&gpio 13 0>;
+				rclk-gpios = <&gpio 5 0>;
+				dio-gpios = <&gpio 6 0>;
+			};
+		};
+	};
+
+	__overrides__ {
+		led7_pins_gpio = <&led7_pins>,"gpios:4";
+		led7control = <&led7control>,"gpios:8";
+	};
+};
